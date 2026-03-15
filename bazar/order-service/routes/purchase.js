@@ -8,7 +8,7 @@ router.post("/purchase/:id", async(req,res)=>{
 
     try{
         //get book info from catalog service
-        const response=await axios.get(`http://localhost:3001/info/${itemId}`);
+        const response=await axios.get(`http://order-service:3001/info/${itemId}`);
         const book = response.data;
 
         //check quantity
@@ -18,10 +18,9 @@ router.post("/purchase/:id", async(req,res)=>{
         }
 
         //update quantity in catalog
-        await axios.put(`http://localhost:3001/update/${itemId}`,{
-            quantity:book.quantity -1
+       await axios.put(`http://order-service:3001/update/${itemId}/stock`, {
+            quantity_change: -1
         });
-
         //save order
         db.run(
             "INSERT INTO orders (item_id) VALUES (?)",
@@ -40,6 +39,9 @@ router.post("/purchase/:id", async(req,res)=>{
             
         );
     }catch (error) {
+         console.log("ERROR:", error.message);
+    console.log("DATA:", error.response?.data);
+
         res.status(500).json({ message: "Error contacting catalog service" });
     }
 });
