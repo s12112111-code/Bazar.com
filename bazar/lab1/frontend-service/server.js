@@ -12,6 +12,9 @@ const CATALOG_SERVICE_URL = process.env.CATALOG_SERVICE_URL || "http://catalog-s
 const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || "http://order-service:3002";
 
 
+
+
+
 // ---------------- SEARCH ----------------
 app.get("/search/:topic", async (req, res) => {
     try {
