@@ -6,6 +6,8 @@ const db = require("../db/database");
 router.get("/info/:id",(req,res)=>{
     const id=req.params.id;
 
+
+    
     db.get(
         "SELECT title,quantity,price FROM books WHERE id=?",
         [id],
