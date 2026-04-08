@@ -1,4 +1,4 @@
-# Books Bazar - Distributed Systems Labs
+# Books Bazar - Distributed Systems 
 
 This repository contains the implementation of **Books Bazar**, a microservices-based online bookstore application. The project is implemented using Docker and Node.js.
 
