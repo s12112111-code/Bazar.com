@@ -67,50 +67,61 @@ function getCache(key) {
 // ---------------- SEARCH(cashed) ----------------
 app.get("/search/:topic", async (req, res) => {
 
+    const start = Date.now();
+
     const key = `search-${req.params.topic}`;
 
     const cached = getCache(key);
     if (cached) {
+        const end = Date.now();
+
         console.log("CACHE HIT");
-        return res.json(cached);
+
+        return res.json({
+            source: "CACHE",
+            time: end - start,
+            data: cached
+        });
     }
 
     console.log("CACHE MISS");
 
-    try {
+    const server = getCatalogServer();
+    console.log("Using catalog server:", server);
 
-         const server = getCatalogServer();
-        console.log("Using catalog server:", server);
-        const response = await axios.get(
-            `${server}/search/${req.params.topic}`,
-            { timeout: 5000 }
-        );
+    const response = await axios.get(
+        `${server}/search/${req.params.topic}`
+    );
 
-         setCache(key, response.data);
+    setCache(key, response.data);
 
-        res.json(response.data);
+    const end = Date.now();
 
-
-    } catch (error) {
-        console.log(error.message);
-        res.status(503).json({
-            success: false,
-            message: "Catalog service unavailable"
-        });
-    }
+    return res.json({
+        source: "SERVER",
+        time: end - start,
+        data: response.data
+    });
 });
-
 
 // ---------------- BOOK INFO(cashed) ----------------
 app.get("/info/:id", async (req, res) => {
 
+    const start = Date.now(); // ⏱ start timer
 
     const key = `book-${req.params.id}`;
 
     const cached = getCache(key);
     if (cached) {
+        const end = Date.now();
+
         console.log("CACHE HIT");
-        return res.json(cached);
+
+        return res.json({
+            source: "CACHE",
+            time: end - start,
+            data: cached
+        });
     }
 
     console.log("CACHE MISS");
@@ -118,23 +129,29 @@ app.get("/info/:id", async (req, res) => {
     try {
         const server = getCatalogServer();
         console.log("Using catalog server:", server);
+
         const response = await axios.get(
             `${server}/info/${req.params.id}`,
             { timeout: 5000 }
         );
 
-         setCache(key, response.data);
+        setCache(key, response.data);
 
-        res.json(response.data);
+        const end = Date.now();
+
+        return res.json({
+            source: "SERVER",
+            time: end - start,
+            data: response.data
+        });
 
     } catch (error) {
-        res.status(503).json({
+        return res.status(503).json({
             success: false,
             message: "Catalog service unavailable"
         });
     }
 });
-
 
 // ---------------- PURCHASE(cashed) ----------------
 app.post("/purchase/:id", async (req, res) => {
