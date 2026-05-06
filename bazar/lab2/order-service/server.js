@@ -10,7 +10,7 @@ app.use(cors());
 const purchaseRoute = require("./routes/purchase");
 app.use("/", purchaseRoute);
 
-
-app.listen(3002, ()=>{
-    console.log("Order Service running on port 3002");
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, ()=>{
+    console.log(`Order Service running on port ${PORT}`);
 });    

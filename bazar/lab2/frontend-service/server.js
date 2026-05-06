@@ -11,11 +11,13 @@ app.use(cors());
    LOAD BALANCING
 ================================ */
 const catalogServers = [
-    "http://localhost:3001"
+  "http://localhost:5001",
+  "http://localhost:5002"
 ];
 
 const orderServers = [
-    "http://localhost:3002"
+  "http://localhost:6001",
+  "http://localhost:6002"
 ];
 
 let catalogIndex = 0;

@@ -20,6 +20,7 @@ app.use("/",infoRoute);
 const updateRoute=require("./routes/update");
 app.use("/",updateRoute);
 
-app.listen(3001, () => {
-    console.log("Catalog running on port 3001");
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Catalog running on port ${PORT}`);
 });
