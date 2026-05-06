@@ -1,0 +1,5 @@
+Node.js (v18.x or later recommended)
+npm (comes with Node.js)
+Docker Desktop (latest version)
+Includes Docker Engine & Docker Compose
+Git (for cloning the repository)
