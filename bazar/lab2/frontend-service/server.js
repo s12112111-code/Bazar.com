@@ -65,7 +65,22 @@ function getCache(key) {
 
     return value;
 }
+/* ================================
+   REPLICATION HELPERS
+================================ */
+async function writeToAllCatalogReplicas(url, data = {}) {
+    const requests = catalogServers.map(server =>
+        axios.put(`${server}${url}`, data)
+    );
+    return Promise.allSettled(requests);
+}
 
+async function writeToAllOrderReplicas(url, data = {}) {
+    const requests = orderServers.map(server =>
+        axios.post(`${server}${url}`, data)
+    );
+    return Promise.allSettled(requests);
+}
 // ---------------- SEARCH(cashed) ----------------
 app.get("/search/:topic", async (req, res) => {
 
@@ -159,18 +174,16 @@ app.get("/info/:id", async (req, res) => {
 app.post("/purchase/:id", async (req, res) => {
     try {
 
-        const server = getOrderServer();
-        console.log("Using catalog server:", server);
-        const response = await axios.post(
-            `${server}/purchase/${req.params.id}`,
-            {},
-            { timeout: 5000 }
+        await writeToAllOrderReplicas(
+            `/purchase/${req.params.id}`
         );
 
-          // invalidate cache
         cache.clear();
 
-        res.json(response.data);
+        res.json({
+            success: true,
+            message: "Purchase completed on all replicas"
+        });
 
     } catch (error) {
         res.status(503).json({
@@ -185,17 +198,17 @@ app.post("/purchase/:id", async (req, res) => {
 app.put("/update/:id/price", async (req, res) => {
     try {
 
-        const server = getCatalogServer();
-        console.log("Using catalog server:", server);
-        const response = await axios.put(
-            `${server}/update/${req.params.id}/price`,
-            req.body,
-            { timeout: 5000 }
+         await writeToAllCatalogReplicas(
+            `/update/${req.params.id}/price`,
+            req.body
         );
 
         cache.clear();
 
-        res.json(response.data);
+        res.json({
+            success: true,
+            message: "Price updated on all replicas"
+        });
 
     } catch (error) {
         res.status(503).json({
@@ -210,18 +223,17 @@ app.put("/update/:id/price", async (req, res) => {
 app.put("/update/:id/stock", async (req, res) => {
     try {
 
-         const server = getCatalogServer();
-        console.log("Using catalog server:", server);
-        const response = await axios.put(
-            `${server}/update/${req.params.id}/stock`,
-            req.body,
-            { timeout: 5000 }
+         await writeToAllCatalogReplicas(
+            `/update/${req.params.id}/stock`,
+            req.body
         );
 
-        
         cache.clear();
 
-        res.json(response.data);
+        res.json({
+            success: true,
+            message: "Stock updated on all replicas"
+        });
 
 
     } catch (error) {

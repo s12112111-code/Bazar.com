@@ -2,13 +2,16 @@ const express=require("express");
 const router=express.Router();
 const axios=require("axios");
 const db = require("../db/database");
-
+const catalogServers = [
+    "http://localhost:5001",
+    "http://localhost:5002"
+];
 router.post("/purchase/:id", async(req,res)=>{
     const itemId=req.params.id;
 
     try{
         //get book info from catalog service
-        const response=await axios.get(`http://localhost:3001/info/${itemId}`);
+        const response=await axios.get(`${catalogServers[0]}/info/${itemId}`);
         const book = response.data;
 
         //check quantity
@@ -16,11 +19,12 @@ router.post("/purchase/:id", async(req,res)=>{
             return res.status(400).json({message:"Book out of stock"});
 
         }
-
-        //update quantity in catalog
-       await axios.put(`http://localhost:3001/update/${itemId}/stock`, {
-            quantity_change: -1
-        });
+        
+            for (let server of catalogServers) {
+            await axios.put(`${server}/update/${itemId}/stock`, {
+                quantity_change: -1
+            });
+        }
         //save order
         db.run(
             "INSERT INTO orders (item_id) VALUES (?)",
