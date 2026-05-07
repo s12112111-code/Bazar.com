@@ -1,0 +1,46 @@
+================================
+Lab 2 Performance Test Results
+================================
+
+1. Cold Search
+Average Latency : 4.33 ms
+Minimum Latency : 2 ms
+Maximum Latency : 15 ms
+Median Latency  : 4 ms
+
+2. Warm Search
+Average Latency : 4.20 ms
+Minimum Latency : 2 ms
+Maximum Latency : 8 ms
+Median Latency  : 4 ms
+
+3. Cold Info
+Average Latency : 5.60 ms
+Minimum Latency : 2 ms
+Maximum Latency : 36 ms
+Median Latency  : 4 ms
+
+4. Warm Info
+Average Latency : 3.60 ms
+Minimum Latency : 2 ms
+Maximum Latency : 13 ms
+Median Latency  : 3 ms
+
+5. Purchase (Write Replication)
+Average Latency : 66.50 ms
+Minimum Latency : 56 ms
+Maximum Latency : 93 ms
+Median Latency  : 67 ms
+
+================================
+Performance Summary
+================================
+
+Search Cache Improvement : 3.08%
+Info Cache Improvement   : 35.71%
+
+Notes:
+- Warm cache operations are faster than cold cache operations.
+- Purchase requests are slower due to replication and database writes.
+- Replication consistency introduces additional write overhead.
+- Cache invalidation ensures updated data consistency across replicas.

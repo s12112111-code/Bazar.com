@@ -1,0 +1,64 @@
+
+LAB 2 SYSTEM OUTPUT TEST
+
+
+================================
+SEARCH TEST
+================================
+Search 'distributed systems' -> 3 books
+Source: SERVER
+Search 'education' -> 1 books
+Source: SERVER
+Response time: 8 ms
+Search 'project management' FAILED (service issue)
+
+================================
+INFO TEST
+================================
+Book 1: How to get a good grade in DOS in 40 minutes a day | Price: 30 | Stock: 10
+Source: SERVER
+Book 2: RPCs for Noobs | Price: 150 | Stock: 19
+Source: SERVER
+Book 3: Xen and the Art of Surviving Undergraduate School | Price: 40 | Stock: 1
+Source: SERVER
+
+================================
+CACHE TEST
+================================
+First request (MISS expected)
+Source: CACHE
+Second request (HIT expected)
+Source: CACHE
+Cache test failed
+
+================================
+PURCHASE TEST
+================================
+Purchase response: bought book RPCs for Noobs
+
+================================
+REPLICATION TEST (UPDATE STOCK)
+================================
+Update response: Stock updated on all replicas
+After update stock: 12
+
+================================
+LOAD BALANCING TEST
+================================
+Request 1: OK
+Request 2: OK
+Request 3: OK
+Request 4: OK
+Request 5: OK
+Request 6: OK
+Request 7: OK
+Request 8: OK
+Request 9: OK
+Request 10: OK
+
+Load distribution depends on backend logs (round-robin).
+
+================================
+END OF SYSTEM OUTPUT TEST
+================================
+
