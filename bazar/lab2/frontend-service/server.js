@@ -174,16 +174,13 @@ app.get("/info/:id", async (req, res) => {
 app.post("/purchase/:id", async (req, res) => {
     try {
 
-        await writeToAllOrderReplicas(
-            `/purchase/${req.params.id}`
+         const response = await axios.post(
+            `http://localhost:6001/purchase/${req.params.id}`
         );
 
         cache.clear();
 
-        res.json({
-            success: true,
-            message: "Purchase completed on all replicas"
-        });
+        res.json(response.data);
 
     } catch (error) {
         res.status(503).json({
@@ -244,6 +241,22 @@ app.put("/update/:id/stock", async (req, res) => {
     }
 });
 
+
+app.post("/invalidate/:id", (req, res) => {
+    const id = req.params.id;
+
+    console.log("INVALIDATE CACHE FOR:", id);
+
+    cache.delete(`book-${id}`);
+
+    for (let key of cache.keys()) {
+        if (key.includes(id)) {
+            cache.delete(key);
+        }
+    }
+
+    res.json({ success: true });
+});
 
 // ---------------- START SERVER ----------------
 const PORT = process.env.PORT || 3000;

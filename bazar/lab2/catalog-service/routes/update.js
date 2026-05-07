@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db/database");
-
+const axios = require("axios");
 
 // ================= UPDATE PRICE =================
 router.put("/update/:id/price", (req, res) => {
@@ -99,7 +99,7 @@ router.put("/update/:id/stock", (req, res) => {
                         message: err.message
                     });
                 }
-
+                axios.post("http://localhost:3000/invalidate/" + id);
                 res.json({
                     success: true,
                     message: "Stock updated successfully",

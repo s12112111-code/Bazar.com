@@ -11,7 +11,8 @@ router.post("/purchase/:id", async(req,res)=>{
 
     try{
         //get book info from catalog service
-        const response=await axios.get(`${catalogServers[0]}/info/${itemId}`);
+        const server = catalogServers[Math.floor(Math.random() * catalogServers.length)];
+        const response = await axios.get(`${server}/info/${itemId}`);
         const book = response.data;
 
         //check quantity
@@ -19,22 +20,25 @@ router.post("/purchase/:id", async(req,res)=>{
             return res.status(400).json({message:"Book out of stock"});
 
         }
-        
-            for (let server of catalogServers) {
+
+           
+           
+           for (let server of catalogServers) {
             await axios.put(`${server}/update/${itemId}/stock`, {
                 quantity_change: -1
             });
-        }
+}
+        
         //save order
         db.run(
             "INSERT INTO orders (item_id) VALUES (?)",
             [itemId],
 
-            function(err){
+           async function(err){
                 if (err){
                     return res.status(400).json({error:err.message});
                 }
-
+                await axios.post("http://localhost:3000/invalidate/" + itemId);
                 res.json({
                     message: `bought book ${book.title}` ,
                     order_id:this.lastID
